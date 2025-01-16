@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 2 com CDN</title>
+    <!-- VUE2 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>{{ message }}</h1>
+        <button @click="changeMessage">Clique aqui</button>
+    </div>
+
+    <script>
+        // Criando uma instância Vue
+        const app = new Vue({
+            el: '#app', // Elemento DOM
+            data: {
+                message: 'Olá, Vue 2 com CDN!'
+            },
+            methods: {
+                changeMessage() {
+                    this.message = 'Mensagem alterada!';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
