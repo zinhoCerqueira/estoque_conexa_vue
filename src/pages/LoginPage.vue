@@ -3,6 +3,40 @@
       <!-- Coluna 1 -->
       <div class="left-column">
         <div class="form-container">
+
+
+          <div class="container-title">
+            
+            <svg viewBox="0 0 960 300">
+
+              <symbol id="s-text">
+                <text text-anchor="middle" x="67%" y="60%">Conexa</text>
+              </symbol>
+
+              <g class = "g-ants">
+                <use xlink:href="#s-text" class="text-copy"></use>
+                <use xlink:href="#s-text" class="text-copy"></use>
+                <use xlink:href="#s-text" class="text-copy"></use>
+                <use xlink:href="#s-text" class="text-copy"></use>
+                <use xlink:href="#s-text" class="text-copy"></use>
+              </g>
+              
+              <symbol id="h-text">
+                <text text-anchor="middle" x="31%" y="60%" class="static-text">ESTOQUE</text>
+              </symbol>
+
+              <g class="g-ants">
+                <use xlink:href="#h-text" class="text-copy2"></use>
+                <use xlink:href="#h-text" class="text-copy2"></use>
+                <use xlink:href="#h-text" class="text-copy2"></use>
+                <use xlink:href="#h-text" class="text-copy2"></use>
+                <use xlink:href="#h-text" class="text-copy2"></use>
+              </g>
+
+            </svg>
+          </div>
+
+
           <form class="login-form" @submit.prevent="login">
             <label for="username">Usuário</label>
             <input
@@ -35,9 +69,9 @@
         <h1>Faz uma graça do lado de cá.</h1>
       </div>
     </div>
-  </template>
+</template>
   
-  <script>
+<script>
   
   import axios from "axios";
   
@@ -94,9 +128,74 @@
   
   
   };
-  </script>
+</script>
   
   <style scoped>
+
+    .container-title{
+      display: flex;
+      align-items: center;
+    }
+    
+    svg {
+        font: 7em 'Roboto';
+        margin: 0 auto;
+        font-weight: 700;
+    }
+
+    .text-copy {
+        fill: none;
+        stroke: rgb(112, 7, 7);
+        stroke-dasharray: 6% 29%;
+        stroke-width: 5px;
+        stroke-dashoffset: 0%;
+        animation: stroke-offset 5.5s infinite linear;
+    }
+
+    .text-copy:nth-child(1) {
+      stroke: #FFA500; /* Laranja padrão */
+      animation-delay: -1s;
+    }
+
+    .text-copy:nth-child(2) {
+      stroke: #FF8C00; /* Laranja escuro */
+      animation-delay: -2s;
+    }
+
+    .text-copy:nth-child(3) {
+      stroke: #FFA500; /* Laranja padrão */
+      animation-delay: -3s;
+    }
+
+    .text-copy:nth-child(4) {
+      stroke: #FF8C00; /* Laranja escuro */
+      animation-delay: -4s;
+    }
+
+    .text-copy:nth-child(5) {
+      stroke: #FFA500; /* Laranja padrão */
+      animation-delay: -5s;
+    }
+
+    .text-copy2 {
+      fill: none;
+      stroke: rgba(7, 0, 0, 0.308);
+      stroke-width: 2px;
+      stroke-dasharray: 90%; /* Preenche o contorno completamente */
+    }
+
+    .static-text{
+      font-size: 0.6em;
+    }
+
+
+
+
+
+@keyframes stroke-offset{
+	100% {stroke-dashoffset: -35%;}
+}
+  
   body {
     font-family: Arial, sans-serif;
     background-color: #c8c8c823;
@@ -123,7 +222,7 @@
   }
   
   .right-column {
-    background-color: #ffffff;
+    background-color: #f4f4f4;
     text-align: center;
   }
   

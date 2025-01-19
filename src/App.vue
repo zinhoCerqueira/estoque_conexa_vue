@@ -12,7 +12,7 @@ export default {
   data() {
     return {
       // isLoggedIn: localStorage.getItem("isLoggedIn") === "true",
-      isLoggedIn: false,
+      isLoggedIn: true,
     };
   },
   computed: {
