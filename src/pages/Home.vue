@@ -1,12 +1,15 @@
 <template>
   <div class="home">
-    
-    <div class="header" >
+    <div class="header">
       <h3 class="welcome">Bem-vindo, {{ user.name }}!</h3>
-      <button class="logout-button" @click="logout">Logout</button>      
+      <button class="logout-button" @click="logout">Logout</button>
     </div>
 
-    <button class="add-item-button" @click="addItem">Adicionar Novo Item</button>
+    <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+      <button class="add-item-button" @click="openRegister">Adicionar Novo Item</button>
+      <RegisterCard v-if="isRegisterOpen" :isVisible="isRegisterOpen" @close="closeRegister" @submit="addItem" />
+    </div>
+
 
     <table class="items-table">
       <thead>
@@ -14,44 +17,84 @@
           <th>Nome</th>
           <th>Preço</th>
           <th>Quantidade</th>
-          <th>Ações</th> 
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in items" :key="item.name">
-          <td>{{ item.name }}</td>
-          <td>R$ {{ item.price.toFixed(2) }}</td>
-          <td>{{ item.quantity }}</td>
+        <tr v-for="item in produtos" :key="item.id">
+          <td>{{ item.nome }}</td>
+          <td>R$ {{ item.preco }}</td>
+          <td>{{ item.quantidade }}</td>
           <td class="actions">
-            <i class="fas fa-edit edit-icon" @click="editItem(item)"></i> 
-            <i class="fas fa-trash-alt delete-icon" @click="deleteItem(item)"></i> 
+            <i class="fas fa-edit edit-icon"></i>
+            <i class="fas fa-trash-alt delete-icon"></i>
           </td>
         </tr>
       </tbody>
     </table>
-
   </div>
 </template>
 
+
 <script>
+
+import axios from "axios";
+import RegisterCard from "../components/RegisterCard.vue";
+
 export default {
+  components: {
+    RegisterCard,
+  },
   data() {
     return {
+      isRegisterOpen: false,
+      produtos: [],
       user: JSON.parse(localStorage.getItem("user")) || { name: "Usuário" },
-      items: [
-        { name: "Água", price: 2.50, quantity: 10 },
-        { name: "Refrigerante", price: 5.00, quantity: 8 },
-        { name: "Cerveja", price: 7.50, quantity: 4 },
-        { name: "Suco", price: 6.00, quantity: 12 },
-        { name: "Água de Coco", price: 8.00, quantity: 6 }
-      ]
     };
   },
+
   methods: {
+    openRegister() {
+      this.isRegisterOpen = true;
+    },
+    closeRegister() {
+      this.isRegisterOpen = false;
+    },
+    addItem(newItem) {
+      axios.post('http://localhost/estoque_conexa_php/index.php?r=ProdutoController/actionAddProduto', newItem)
+        .then(response => {
+          if (response.data.status === 'success') {
+            this.items.push(newItem);
+          } else {
+            console.error('Erro ao adicionar item:', response.data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Erro de comunicação com o backend:', error);
+        });
+    },
+
+
     logout() {
       localStorage.clear();
       window.location.reload();
     },
+
+    async fetchProdutos() {
+    try {
+      const response = await axios.get('http://localhost/estoque_conexa_php/index.php?r=ProdutoController/index');
+      this.produtos = response.data;
+      
+    } catch (error) {
+
+      console.error('Erro ao buscar os produtos:', error);
+    }
+  }
+
+  },
+
+  mounted() {
+    this.fetchProdutos(); // Chama a API ao montar o componente
   },
 };
 </script>
@@ -64,7 +107,7 @@ export default {
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 .add-item-button:hover {
@@ -155,7 +198,7 @@ body {
 
 .items-table {
   width: 100%;
-  margin-top: 50px;
+  margin-top: 5px;
   border-collapse: collapse;
   text-align: left;
   background-color: white;

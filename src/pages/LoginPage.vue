@@ -66,7 +66,7 @@
   
       <!-- Coluna 2 -->
       <div class="right-column">
-        <h1>Faz uma graça do lado de cá.</h1>
+        <img src="../assets/undraw_groceries_4via.svg" alt="Descrição do ícone" class="size-img"/>
       </div>
     </div>
 </template>
@@ -130,7 +130,12 @@
   };
 </script>
   
-  <style scoped>
+<style scoped>
+
+  .size-img {
+      width: 500px;
+      height: auto; /* Mantém a proporção da imagem */
+    }
 
     .container-title{
       display: flex;
@@ -140,12 +145,12 @@
     svg {
         font: 7em 'Roboto';
         margin: 0 auto;
-        font-weight: 700;
+        font-weight: 900;
     }
 
     .text-copy {
         fill: none;
-        stroke: rgb(112, 7, 7);
+        stroke: rgb(172, 161, 161);
         stroke-dasharray: 6% 29%;
         stroke-width: 5px;
         stroke-dashoffset: 0%;
