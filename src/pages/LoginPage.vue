@@ -91,36 +91,41 @@
     methods: {
       async login() {
         try {
+          const formData = new URLSearchParams();
+          formData.append('username', this.form.username);
+          formData.append('password', this.form.password);
+
           const response = await axios.post(
-            "https://staging.conexa.app/index.php/api/v2/auth",
+            "http://localhost/estoque_conexa_php/index.php?r=user/login",
+            formData,
             {
-              username: this.form.username,
-              password: this.form.password,
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded', 
+              },
             }
           );
-  
-          if (response.status === 200) {
-            const data = response.data;
-  
-            // Salva os dados relevantes no localStorage
+
+          if (response.status === 200 && response.data.success) {
+            const data = response.data.data;
+            console.log(data);
+
             localStorage.setItem("user", JSON.stringify(data.user));
             localStorage.setItem("tokenType", data.tokenType);
             localStorage.setItem("accessToken", data.accessToken);
             localStorage.setItem("expiresIn", data.expiresIn);
-  
-            // Seta o usuário como logado
+
             localStorage.setItem("isLoggedIn", "true");
-  
+
             window.location.reload();
+          } else {
+            alert("Erro ao fazer login. Verifique suas credenciais.");
           }
         } catch (error) {
           alert("Erro ao fazer login. Verifique suas credenciais.");
-          console.error(error);
+          console.error("Erro na requisição de login:", error);
         }
       },
-  
-  
-  
+
       goToRegister() {
         // Redirecionar para a página de cadastro
       },

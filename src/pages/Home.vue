@@ -81,15 +81,15 @@ export default {
     },
 
     async fetchProdutos() {
-    try {
-      const response = await axios.get('http://localhost/estoque_conexa_php/index.php?r=ProdutoController/index');
-      this.produtos = response.data;
-      
-    } catch (error) {
+      try {
+        const response = await axios.get('http://localhost/estoque_conexa_php/index.php?r=produto/getprodutos');
+        this.produtos = response.data;
+        
+      } catch (error) {
 
-      console.error('Erro ao buscar os produtos:', error);
+        console.error('Erro ao buscar os produtos:', error);
+      }
     }
-  }
 
   },
 

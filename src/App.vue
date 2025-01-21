@@ -11,8 +11,7 @@ import HomePage from "./pages/Home.vue";
 export default {
   data() {
     return {
-      // isLoggedIn: localStorage.getItem("isLoggedIn") === "true",
-      isLoggedIn: true,
+      isLoggedIn: localStorage.getItem("isLoggedIn") === "true",
     };
   },
   computed: {
