@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="header">
-      <h3 class="welcome">Bem-vindo, {{ user.name }}!</h3>
+      <h3 class="welcome">Bem-vindo, {{ user }}!</h3>
       <button class="logout-button" @click="logout">Logout</button>
     </div>
 
@@ -17,14 +17,20 @@
           <th>Nome</th>
           <th>Preço</th>
           <th>Quantidade</th>
+          <th>Ativo</th>
+          <th>Criado em</th>
+          <th>Atualizado em</th>
           <th>Ações</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in produtos" :key="item.id">
-          <td>{{ item.nome }}</td>
-          <td>R$ {{ item.preco }}</td>
+        <tr v-for="item in produtos" :key="item.productID">
+          <td>{{ item.name }}</td>
+          <td>R$ {{ item.price }}</td>
           <td>{{ item.quantidade }}</td>
+          <td>{{ item.active }}</td>
+          <td>{{ item.createdAt }}</td>
+          <td>{{ item.updatedAt }}</td>
           <td class="actions">
             <i class="fas fa-edit edit-icon"></i>
             <i class="fas fa-trash-alt delete-icon"></i>
@@ -32,6 +38,7 @@
         </tr>
       </tbody>
     </table>
+
   </div>
 </template>
 
@@ -49,7 +56,7 @@ export default {
     return {
       isRegisterOpen: false,
       produtos: [],
-      user: JSON.parse(localStorage.getItem("user")) || { name: "Usuário" },
+      user: localStorage.getItem("user") || { name: "Usuário" }
     };
   },
 
@@ -84,6 +91,7 @@ export default {
       try {
         const response = await axios.get('http://localhost/estoque_conexa_php/index.php?r=produto/getprodutos');
         this.produtos = response.data;
+        console.log(response.data)
         
       } catch (error) {
 

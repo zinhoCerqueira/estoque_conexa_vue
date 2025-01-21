@@ -107,12 +107,11 @@
 
           if (response.status === 200 && response.data.success) {
             const data = response.data.data;
-            console.log(data);
+            console.log(response.data);
 
-            localStorage.setItem("user", JSON.stringify(data.user));
-            localStorage.setItem("tokenType", data.tokenType);
-            localStorage.setItem("accessToken", data.accessToken);
-            localStorage.setItem("expiresIn", data.expiresIn);
+            localStorage.setItem("user", data.name);
+            localStorage.setItem("type", data.token);
+            localStorage.setItem("accessToken", data.token);
 
             localStorage.setItem("isLoggedIn", "true");
 
@@ -150,7 +149,7 @@
     svg {
         font: 7em 'Roboto';
         margin: 0 auto;
-        font-weight: 900;
+        font-weight: 400;
     }
 
     .text-copy {
