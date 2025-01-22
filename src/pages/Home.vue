@@ -2,11 +2,21 @@
   <div class="home">
     <div class="header">
       <h3 class="welcome">Bem-vindo, {{ user }}!</h3>
-      <button class="logout-button" @click="logout">Logout</button>
+      <button class="logout-button" @click="logout">
+        Logout
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
     </div>
 
     <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
-      <button class="add-item-button" @click="openRegister">Adicionar Novo Item</button>
+      
+      <button class="add-item-button" @click="fetchProdutosAPI" style="margin-right: 7px;">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+      <button class="add-item-button" @click="openRegister">
+        <i class="fa-solid fa-box-open"></i>
+        Abastecer estoque
+      </button>
       <RegisterCard v-if="isRegisterOpen" :isVisible="isRegisterOpen" @close="closeRegister" @submit="addItem" />
     </div>
 
@@ -64,9 +74,11 @@ export default {
     openRegister() {
       this.isRegisterOpen = true;
     },
+
     closeRegister() {
       this.isRegisterOpen = false;
     },
+
     addItem(newItem) {
       axios.post('http://localhost/estoque_conexa_php/index.php?r=ProdutoController/actionAddProduto', newItem)
         .then(response => {
@@ -81,17 +93,32 @@ export default {
         });
     },
 
-
     logout() {
       localStorage.clear();
       window.location.reload();
     },
 
-    async fetchProdutos() {
+    async fetchProdutosAPI(){
       try {
-        const response = await axios.get('http://localhost/estoque_conexa_php/index.php?r=produto/getprodutos');
-        this.produtos = response.data;
-        console.log(response.data)
+        let data = new URLSearchParams();
+        data.append('authToken', localStorage.getItem('accessToken'));
+
+        const response = await axios.post('http://localhost/estoque_conexa_php/index.php?r=produto/getproductsapi', data);
+        this.produtos = response.data.data;
+        console.log(response)
+        
+      } catch (error) {
+
+        console.error('Erro ao buscar os produtos:', error);
+      }
+    },
+
+    async fetchProdutosBD(){
+      try {
+        
+        const response = await axios.get('http://localhost/estoque_conexa_php/index.php?r=produto/getproductsbd');
+        this.produtos = response.data.data;
+        console.log(response)
         
       } catch (error) {
 
@@ -102,7 +129,7 @@ export default {
   },
 
   mounted() {
-    this.fetchProdutos(); // Chama a API ao montar o componente
+    this.fetchProdutosBD();
   },
 };
 </script>
