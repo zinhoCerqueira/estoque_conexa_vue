@@ -4,7 +4,7 @@
       <h3 class="welcome">Bem-vindo, {{ user }}!</h3>
       <button class="logout-button" @click="logout">
         Logout
-        <i class="fa-solid fa-right-from-bracket"></i>
+        <i class="fa-solid fa-right-from-bracket"style="margin-left: 5px;"></i>
       </button>
     </div>
 
@@ -13,11 +13,21 @@
       <button class="add-item-button" @click="fetchProdutosAPI" style="margin-right: 7px;">
         <i class="fas fa-sync-alt"></i>
       </button>
-      <button class="add-item-button" @click="openRegister">
-        <i class="fa-solid fa-box-open"></i>
+      <button class="add-item-button" @click="openRegister" style="margin-right: 7px;">
+        <i class="fa-solid fa-box-open" style="margin-right: 5px;"></i>
         Abastecer estoque
       </button>
-      <RegisterCard v-if="isRegisterOpen" :isVisible="isRegisterOpen" @close="closeRegister" @submit="addItem" />
+      <button class="add-item-button" @click="">
+        <i class="fa-solid fa-cart-shopping" style="margin-right: 5px;"></i>
+        Realizar venda
+      </button>
+      <RegisterCard
+        v-if="isRegisterOpen"
+        :isVisible="isRegisterOpen"
+        :produtos="produtos"
+        @close="closeRegister"
+        @submit="addItem"
+      />
     </div>
 
 

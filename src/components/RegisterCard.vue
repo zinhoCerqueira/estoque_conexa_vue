@@ -1,81 +1,133 @@
 <template>
-    <div v-if="isVisible" class="modal-overlay">
-        <div class="modal-card">
-            <div class="register-header">
-                <h2>Cadastre um novo item</h2>
-                <button class="close-button" @click="closeModal">X</button> 
-            </div>
-            <form @submit.prevent="handleSubmit">
-                <div class="form-group">
-                    <label for="itemName">Nome</label>
-                    <input
-                    id="itemName"
-                    type="text"
-                    v-model="itemName"
-                    placeholder="Digite o nome do item"
-                    required
-                    />
-                </div><div class="form-group">
-                    <label for="itemPreco">Preço</label>
-                    <input
-                    id="itemPreco"
-                    type="text"
-                    v-model="itemPreco"
-                    placeholder="Digite o preço do item"
-                    required
-                    />
-                </div>
-                <div class="form-group">
-                    <label for="itemQuantidade">Quantidade</label>
-                    <input
-                    id="itemQuantidade"
-                    type="text"
-                    v-model="itemQuantidade"
-                    placeholder="Digite a quantidade de entrada"
-                    required
-                    />
-                </div>
-                <button type="submit" class="submit-button">Cadastrar</button>
-            </form>
+  <div v-if="isVisible" class="modal-overlay">
+    <div class="modal-card">
+      <div class="register-header">
+        <h2>Cadastre um novo item</h2>
+        <button class="close-button" @click="closeModal">X</button>
+      </div>
+      <form @submit.prevent="handleSubmit">
+        <div class="form-group">
+          <label for="itemSelect">Produto</label>
+          <select
+            id="itemSelect"
+            v-model="selectedProductId"
+            required
+          >
+            <option
+              v-for="produto in produtos"
+              :key="produto.productID"
+              :value="produto.productID"
+            >
+              {{ produto.name }}
+            </option>
+          </select>
         </div>
+        <div class="form-group">
+          <label for="itemQuantidade">Quantidade</label>
+          <input
+            id="itemQuantidade"
+            type="text"
+            v-model="itemQuantidade"
+            placeholder="Digite a quantidade de entrada"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="itemNovoPreco">Novo Preço</label>
+          <input
+            id="itemNovoPreco"
+            type="text"
+            v-model="itemNovoPreco"
+            placeholder="Caso não mude, deixe em branco"
+          />
+        </div>
+        <button type="submit" class="submit-button">Cadastrar</button>
+      </form>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    props: {
-      isVisible: {
-        type: Boolean,
-        required: true,
-      },
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+
+export default {
+  props: {
+    isVisible: {
+      type: Boolean,
+      required: true,
     },
-    data() {
-      return {
-        itemName: "",
-        itemPreco:"",
-        itemQuantidade: "",
-      };
+    produtos: {
+      type: Array,
+      required: true,
+      default: () => [],
     },
-    methods: {
-      closeModal() {
-        this.$emit("close");
-      },
-      handleSubmit() {
-        const newItem = {
-          name: this.itemName,
-          preco: this.itemPreco,
-          quantidade: this.itemQuantidade
-        };
-        this.$emit("submit", newItem);
-        this.itemName = "";
-        this.itemDescription = "";
-        this.closeModal();
-      },
+  },
+  data() {
+    return {
+      selectedProductId: "",
+      itemQuantidade: "",
+      itemNovoPreco:""
+    };
+  },
+
+  methods: {
+
+    closeModal() {
+      this.$emit("close");
     },
-  };
-  </script>
-  
-  <style scoped>
+    async handleSubmit() {
+      const selectedProduct = this.produtos.find(
+        (produto) => produto.productID === this.selectedProductId
+      );
+
+      if (!selectedProduct) {
+        alert("Produto não encontrado.");
+        return;
+      }
+
+      const produto = new URLSearchParams();
+      produto.append("productID", selectedProduct.productID);
+      produto.append("quantidade", this.itemQuantidade);
+
+      if (this.itemNovoPreco) {
+        produto.append("novoPreco", this.itemNovoPreco);
+      }
+
+      console.log(produto)
+
+      try {
+        const response = await axios.post(
+          "http://localhost/estoque_conexa_php/index.php?r=produto/updateProduto",
+          produto,
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        );
+
+        // Verifica a resposta
+        if (response.status === 200 && response.data.success) {
+          alert("Produto atualizado com sucesso!");
+        } else {
+          alert("Erro ao atualizar o produto: " + response.data.message);
+        }
+      } catch (error) {
+        console.error("Erro ao enviar os dados:", error);
+        alert("Erro na requisição. Verifique os logs.");
+      }
+
+      // Limpa os campos e fecha o modal
+      this.selectedProductId = "";
+      this.itemQuantidade = "";
+      this.itemNovoPreco = "";
+      this.closeModal();
+    },
+  },
+};
+</script>
+
+<style scoped>
   .register-header {
     display: flex;
     justify-content: space-between;
@@ -156,4 +208,3 @@
     background-color: #bd6514;
   }
   </style>
-  
