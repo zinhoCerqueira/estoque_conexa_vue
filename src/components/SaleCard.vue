@@ -170,6 +170,7 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-bottom: 10px;
+    box-sizing: border-box;
   }
   
   .table-container {
