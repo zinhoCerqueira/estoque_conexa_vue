@@ -169,11 +169,11 @@ export default {
     align-items: center;
     justify-content: center;
     padding: 0;
-}
+  }
 
-.close-button:hover {
-    background-color: darkred;
-}
+  .close-button:hover {
+      background-color: darkred;
+  }
   
   .form-group {
     margin-bottom: 15px;
@@ -192,7 +192,7 @@ export default {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box; /* Inclui padding e bordas no tamanho total */
-}
+  }
 
   
   .submit-button {
@@ -207,4 +207,4 @@ export default {
   .submit-button:hover {
     background-color: #bd6514;
   }
-  </style>
+</style>

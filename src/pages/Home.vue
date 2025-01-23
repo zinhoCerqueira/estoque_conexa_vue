@@ -17,10 +17,18 @@
         <i class="fa-solid fa-box-open" style="margin-right: 5px;"></i>
         Abastecer estoque
       </button>
-      <button class="add-item-button" @click="">
-        <i class="fa-solid fa-cart-shopping" style="margin-right: 5px;"></i>
+      <button class="add-item-button" @click="showCartCart()">
+        <i class="fa-solid fa-cart-shopping"  style="margin-right: 5px;"></i>
         Realizar venda
       </button>
+      <SaleCard 
+        v-if="showCart"
+        :isCartVisible="showCart" 
+        :produtos="produtos" 
+        @close="closeCart"
+      
+        />
+        
       <RegisterCard
         v-if="isRegisterOpen"
         :isVisible="isRegisterOpen"
@@ -36,21 +44,21 @@
         <tr>
           <th>Nome</th>
           <th>Preço</th>
-          <th>Quantidade</th>
-          <th>Ativo</th>
+          <th style="text-align: center;">Quantidade</th>
+          <th style="text-align: center;">Ativo</th>
           <th>Criado em</th>
           <th>Atualizado em</th>
-          <th>Ações</th>
+          <th style="text-align: center;">Ações</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="item in produtos" :key="item.productID">
           <td>{{ item.name }}</td>
-          <td>R$ {{ item.price }}</td>
-          <td>{{ item.quantidade }}</td>
-          <td>{{ item.active }}</td>
-          <td>{{ item.createdAt }}</td>
-          <td>{{ item.updatedAt }}</td>
+          <td>R$ {{ parseFloat(item.price).toFixed(2) }}</td>
+          <td style="text-align: center;" >{{ item.quantidade }}</td>
+          <td style="text-align: center;">{{ item.active ? '✅' : '❌' }}</td>
+          <td>{{ formatarData(item.createdAt) }}</td>
+          <td>{{ formatarData(item.updatedAt) }}</td>
           <td class="actions">
             <i class="fas fa-edit edit-icon"></i>
             <i class="fas fa-trash-alt delete-icon"></i>
@@ -67,20 +75,40 @@
 
 import axios from "axios";
 import RegisterCard from "../components/RegisterCard.vue";
+import SaleCard from "../components/SaleCard.vue";
 
 export default {
   components: {
     RegisterCard,
+    SaleCard
   },
   data() {
     return {
       isRegisterOpen: false,
       produtos: [],
-      user: localStorage.getItem("user") || { name: "Usuário" }
+      user: localStorage.getItem("user") || { name: "Usuário" },
+      showCart: false,
     };
   },
 
   methods: {
+    formatarData(data) {
+      const dataObj = new Date(data);
+      const dia = String(dataObj.getDate()).padStart(2, '0');
+      const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+      const ano = dataObj.getFullYear();
+      const horas = String(dataObj.getHours()).padStart(2, '0');
+      const minutos = String(dataObj.getMinutes()).padStart(2, '0');
+      return `${dia}/${mes}/${ano} às ${horas}:${minutos}`;
+    },
+    showCartCart() {
+      this.showCart = true;
+    },
+
+    closeCart() {
+      this.showCart = false;
+    },
+
     openRegister() {
       this.isRegisterOpen = true;
     },
