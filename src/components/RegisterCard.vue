@@ -12,7 +12,9 @@
             id="itemSelect"
             v-model="selectedProductId"
             required
+            class="search-input"
           >
+            <option value="" disabled selected>Selecione um produto</option>
             <option
               v-for="produto in produtos"
               :key="produto.productID"
@@ -128,6 +130,15 @@ export default {
 </script>
 
 <style scoped>
+.search-input {
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+
   .register-header {
     display: flex;
     justify-content: space-between;

@@ -61,10 +61,13 @@
             <div class="table-body-container">
               <table class="items-table">
                 <tbody>
-                  <tr v-for="produto in produtosFiltrados" :key="produto.id">
+                  <tr 
+                    v-for="produto in produtosFiltrados.filter(p => p.quantidade > 0)" 
+                    :key="produto.id"
+                  >
                     <td>{{ produto.name }}</td>
                     <td>{{ produto.quantidade }}</td>
-                    <td>{{ produto.price }}</td>
+                    <td>R$ {{ Number(produto.price).toFixed(2) }}</td>
                     <td>
                       <div style="display: flex; align-items: center; justify-content: center;">
                         <button
