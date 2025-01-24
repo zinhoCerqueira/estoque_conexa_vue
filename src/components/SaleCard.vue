@@ -21,12 +21,19 @@
             <tr v-for="(produto, index) in carrinhoAtual" :key="produto.id">
               <td>{{ index + 1 }}</td>
               <td>{{ produto.name }}</td>
-              <td>{{ produto.price }}</td>
+              <td>{{ Number(produto.price).toFixed(2) }}</td>
               <td>{{ produto.quantidade }}</td>
-              <td>{{ produto.price * produto.quantidade }}</td>
+              <td>{{ Number(produto.price * produto.quantidade).toFixed(2) }}</td>
             </tr>
           </tbody>
         </table>
+
+        <div class="total-container">
+          <div class="dual-pill">
+            <span class="left">Total a ser pago:</span>
+            <span class="right">R$ {{ totalCarrinho }}</span>
+          </div>
+        </div>
   
         <div class="line-division"></div>
   
@@ -121,6 +128,15 @@
         }
       },
     },
+    computed: {
+      totalCarrinho() {
+        return this.carrinhoAtual.reduce(
+          (total, produto) => total + produto.price * produto.quantidade,
+          0
+        );
+      },
+    },
+
     methods: {
       buscarProduto() {
         if (this.termoBusca.length >= 3) {
@@ -138,31 +154,45 @@
           (item) => item.productID === produto.productID
         );
 
-        console.log(produto)
-  
-        // Atualizar estoque
-        const produtoNoEstoque = this.produtos.find(
-          (item) => item.productID === produto.productID
-        );
-        if (produtoNoEstoque && produtoNoEstoque.quantidade >= quantidade) {
-          produtoNoEstoque.quantidade -= quantidade;
-        } else {
-          return; // Não permitir adicionar se não houver estoque suficiente
+        console.log(produto);
+
+        if (!produtoNoCarrinho && quantidade < 0) {
+          console.warn("Tentativa de remover um item que não está no carrinho.");
+          return; // Impede remoções de itens que não existem no carrinho
         }
-  
+
+        // Atualizar estoque (somente para adição de itens)
+        if (quantidade > 0) {
+          const produtoNoEstoque = this.produtos.find(
+            (item) => item.productID === produto.productID
+          );
+
+          if (produtoNoEstoque && produtoNoEstoque.quantidade >= quantidade) {
+            produtoNoEstoque.quantidade -= quantidade;
+          } else {
+            console.warn("Estoque insuficiente para o produto.");
+            return; // Não permitir adicionar se não houver estoque suficiente
+          }
+        }
+
         // Atualizar carrinho
         if (produtoNoCarrinho) {
           produtoNoCarrinho.quantidade += quantidade;
+
+          // Remover item do carrinho se a quantidade final for <= 0
           if (produtoNoCarrinho.quantidade <= 0) {
             this.carrinhoAtual = this.carrinhoAtual.filter(
               (item) => item.productID !== produto.productID
             );
           }
-        } else {
+        } else if (quantidade > 0) {
+          // Adicionar novo item ao carrinho apenas se a quantidade for positiva
           this.carrinhoAtual.push({ ...produto, quantidade });
         }
-        console.log(this.carrinhoAtual)
+
+        console.log(this.carrinhoAtual);
       },
+
       closeModal() {
         this.$emit("close");
       },
@@ -171,6 +201,45 @@
   </script>
   
   <style scoped>
+      .total-container {
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .dual-pill {
+      white-space: nowrap;
+      display: inline-flex;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #ff7700; /* Borda laranja */
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      line-height: 1.5em;
+      height: 36px; /* Altura da cápsula */
+    }
+
+    .dual-pill span {
+      display: inline-block;
+      padding: 0 15px;
+      line-height: 36px;
+      text-align: center;
+    }
+
+    .dual-pill .left {
+      background-color: white;
+      color: #d8781e;
+      flex: 2; 
+    }
+
+    .dual-pill .right {
+      background-color: #d8781e;
+      color: white;
+      flex: 1; 
+    }
+
+
   .search-input {
     padding: 10px;
     width: 100%;
