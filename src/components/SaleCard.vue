@@ -29,6 +29,12 @@
         </table>
 
         <div class="total-container">
+
+          <button class="finish-buy-button" @click="enviaPedido()">
+            Finalizar Compra
+            <i class="fa-solid fa-wallet" style="margin-left: 5px;"></i>
+          </button>
+
           <div class="dual-pill">
             <span class="left">Total a ser pago:</span>
             <span class="right">R$ {{ totalCarrinho }}</span>
@@ -102,6 +108,9 @@
   </template>
   
   <script>
+
+  import axios from "axios";
+
   export default {
     name: "SaleCard",
     props: {
@@ -119,6 +128,8 @@
         termoBusca: "",
         produtosFiltrados: this.produtos, // Inicialmente exibe todos os produtos
         carrinhoAtual: [],
+        customerId : 59,
+        requesterId : 13
       };
     },
     watch: {
@@ -196,12 +207,70 @@
       closeModal() {
         this.$emit("close");
       },
+
+      async enviaPedido() {
+        // Verificar se o carrinho tem produtos
+        if (this.carrinhoAtual.length === 0) {
+          console.warn("O carrinho está vazio. Não é possível finalizar a compra.");
+          return;
+        }
+
+        // Preparar os dados a serem enviados
+        const formData = new URLSearchParams();
+        formData.append('customerId', this.customerId); // ID do cliente
+        formData.append('requesterId', this.requesterId); // ID do solicitante
+        formData.append('authToken', localStorage.getItem('accessToken'));
+
+        // Preparar o carrinho no formato correto
+        const produtosCarrinho = this.carrinhoAtual.map(produto => ({
+          productID: produto.productID,
+          quantidade: produto.quantidade,
+        }));
+        
+        formData.append('productList', JSON.stringify(produtosCarrinho)); // Lista de produtos no carrinho
+
+        try {
+          const response = await axios.post(
+            "http://localhost/estoque_conexa_php/index.php?r=compra/create", // URL do endpoint
+            formData,
+            {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded', // Definir o tipo de conteúdo como URL-encoded
+              },
+            }
+          );
+
+          // Verificar resposta
+          if (response.data.success) {
+            console.log("Compra realizada com sucesso!");
+            // Você pode adicionar alguma lógica de sucesso aqui, como redirecionar ou limpar o carrinho
+          } else {
+            console.error("Erro ao realizar compra:", response.data.message);
+          }
+
+        } catch (error) {
+          console.error("Erro na requisição:", error);
+        }
+      }
     },
   };
   </script>
   
   <style scoped>
+  .finish-buy-button {
+    padding: 10px 20px;
+    background-color: #d8781e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 9px;
+  }
+
       .total-container {
+      align-items: center;
+      display: flex;
+      justify-content: flex-end;
       margin-top: 20px;
       font-size: 16px;
       font-weight: bold;
@@ -210,20 +279,19 @@
     .dual-pill {
       white-space: nowrap;
       display: inline-flex;
-      border-radius: 8px;
+      border-radius: 4px;
       overflow: hidden;
-      border: 1px solid #ff7700; /* Borda laranja */
+      border: 1px solid #d8781e;
       font-size: 14px;
       font-weight: bold;
       text-align: center;
       line-height: 1.5em;
-      height: 36px; /* Altura da cápsula */
     }
 
     .dual-pill span {
       display: inline-block;
       padding: 0 15px;
-      line-height: 36px;
+      line-height: 34px;
       text-align: center;
     }
 
