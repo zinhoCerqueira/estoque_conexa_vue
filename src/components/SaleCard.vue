@@ -129,17 +129,20 @@
             produto.name.toLowerCase().includes(termo)
           );
         } else {
-          this.produtosFiltrados = this.produtos; // Redefine a lista para o estoque completo
+          this.produtosFiltrados = this.produtos;
         }
       },
+
       adicionarAoCarrinho(produto, quantidade) {
         const produtoNoCarrinho = this.carrinhoAtual.find(
-          (item) => item.id === produto.id
+          (item) => item.productID === produto.productID
         );
+
+        console.log(produto)
   
         // Atualizar estoque
         const produtoNoEstoque = this.produtos.find(
-          (item) => item.id === produto.id
+          (item) => item.productID === produto.productID
         );
         if (produtoNoEstoque && produtoNoEstoque.quantidade >= quantidade) {
           produtoNoEstoque.quantidade -= quantidade;
@@ -152,12 +155,13 @@
           produtoNoCarrinho.quantidade += quantidade;
           if (produtoNoCarrinho.quantidade <= 0) {
             this.carrinhoAtual = this.carrinhoAtual.filter(
-              (item) => item.id !== produto.id
+              (item) => item.productID !== produto.productID
             );
           }
         } else {
           this.carrinhoAtual.push({ ...produto, quantidade });
         }
+        console.log(this.carrinhoAtual)
       },
       closeModal() {
         this.$emit("close");

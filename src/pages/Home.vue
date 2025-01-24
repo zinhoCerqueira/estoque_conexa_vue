@@ -143,7 +143,7 @@ export default {
 
         const response = await axios.post('http://localhost/estoque_conexa_php/index.php?r=produto/getproductsapi', data);
         this.produtos = response.data.data;
-        console.log(response)
+
         
       } catch (error) {
 
@@ -156,7 +156,6 @@ export default {
         
         const response = await axios.get('http://localhost/estoque_conexa_php/index.php?r=produto/getproductsbd');
         this.produtos = response.data.data;
-        console.log(response)
         
       } catch (error) {
 
