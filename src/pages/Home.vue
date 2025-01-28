@@ -1,43 +1,52 @@
 <template>
-  <div class="home">
-    <div class="header">
-      <h3 class="welcome">Bem-vindo, {{ user }}!</h3>
-      <button class="logout-button" @click="logout">
-        Logout
-        <i class="fa-solid fa-right-from-bracket"style="margin-left: 5px;"></i>
-      </button>
+  <div>
+    <div>
+      <Header></Header>
     </div>
 
-    <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
-      
-      <button class="add-item-button" @click="fetchProdutosAPI" style="margin-right: 7px;">
-        <i class="fas fa-sync-alt"></i>
-      </button>
-      <button class="add-item-button" @click="openRegister" style="margin-right: 7px;">
-        <i class="fa-solid fa-box-open" style="margin-right: 5px;"></i>
-        Abastecer estoque
-      </button>
-      <button class="add-item-button" @click="showCartCart()">
-        <i class="fa-solid fa-cart-shopping"  style="margin-right: 5px;"></i>
-        Realizar venda
-      </button>
-      <SaleCard 
-        v-if="showCart"
-        :isCartVisible="showCart" 
-        :produtos="produtos" 
-        @close="closeCart"
-      
-        />
-        
-      <RegisterCard
-        v-if="isRegisterOpen"
-        :isVisible="isRegisterOpen"
-        :produtos="produtos"
-        @close="closeRegister"
-        @submit="addItem"
-      />
-    </div>
+    <div class="home">
+      <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; margin-top: 25px;">
+      <div>
+        <p class="welcome">Bem-vindo, {{ user }}!</p>
+      </div>
 
+      <div>
+        <div style="display: flex; justify-content: flex-end;">    
+          <button class="add-item-button" @click="fetchProdutosAPI" style="margin-right: 7px;">
+            <i class="fas fa-sync-alt"></i> 
+          </button>
+      
+          <button class="add-item-button" @click="changeSalePage" style="margin-right: 7px;">
+            <i class="fa-solid fa-money-check-dollar" style="margin-right: 5px;"></i> Histórico
+          </button>
+      
+          <button class="add-item-button" @click="openRegister" style="margin-right: 7px;">
+            <i class="fa-solid fa-box-open" style="margin-right: 5px;"></i>
+            Abastecer estoque
+          </button>
+      
+          <button class="add-item-button" @click="showCartCart()">
+            <i class="fa-solid fa-cart-shopping" style="margin-right: 5px;"></i>
+            Realizar venda
+          </button>
+          
+          <SaleCard 
+            v-if="showCart"
+            :isCartVisible="showCart" 
+            :produtos="produtos" 
+            @close="closeCart"
+          />
+              
+          <RegisterCard
+            v-if="isRegisterOpen"
+            :isVisible="isRegisterOpen"
+            :produtos="produtos"
+            @close="closeRegister"
+            @submit="addItem"
+          />
+        </div>
+      </div>
+  </div>
 
     <table class="items-table">
       <thead>
@@ -66,6 +75,10 @@
         </tr>
       </tbody>
     </table>
+    </div>
+
+
+
 
   </div>
 </template>
@@ -76,11 +89,13 @@
 import axios from "axios";
 import RegisterCard from "../components/RegisterCard.vue";
 import SaleCard from "../components/SaleCard.vue";
+import Header from "../components/Header.vue"
 
 export default {
   components: {
     RegisterCard,
-    SaleCard
+    SaleCard,
+    Header
   },
   data() {
     return {
@@ -92,6 +107,11 @@ export default {
   },
 
   methods: {
+    changeSalePage(){
+      localStorage.setItem('currentPage', 'SalesPage')
+      window.location.reload();
+    },
+
     formatarData(data) {
       const dataObj = new Date(data);
       const dia = String(dataObj.getDate()).padStart(2, '0');
@@ -171,7 +191,15 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+  .welcome {
+    font-size: 1.4rem; 
+    font-weight: 600; 
+    color: #333;
+    margin: 10px 0;
+    font-family: 'Montserrat', Arial, sans-serif;
+  }
+
 .add-item-button {
   background-color: #d8781e; 
   color: white;
@@ -247,11 +275,6 @@ body {
 
 .home {
   padding: 20px;
-}
-
-.welcome {
-  font-size: 1.2em;
-  color: #333;
 }
 
 .logout-button {

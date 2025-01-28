@@ -7,6 +7,7 @@
 <script>
 import LoginPage from "./pages/LoginPage.vue";
 import HomePage from "./pages/Home.vue";
+import SalesPage from "./pages/SalesPage.vue";
 
 export default {
   data() {
@@ -16,12 +17,21 @@ export default {
   },
   computed: {
     currentPage() {
-      return this.isLoggedIn ? "HomePage" : "LoginPage";
+      if (this.isLoggedIn) {
+        return localStorage.getItem('currentPage')
+      } else {
+        return "LoginPage";
+      }
     },
   },
+
+  methods:{
+  },
+
   components: {
     LoginPage,
     HomePage,
+    SalesPage
   },
 };
 </script>

@@ -114,6 +114,7 @@
             localStorage.setItem("accessToken", data.token);
 
             localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("currentPage", "HomePage")
 
             window.location.reload();
           } else {
