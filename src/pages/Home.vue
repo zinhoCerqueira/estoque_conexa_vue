@@ -186,7 +186,7 @@ export default {
   },
 
   mounted() {
-    this.fetchProdutosBD();
+    this.fetchProdutosAPI();
   },
 };
 </script>

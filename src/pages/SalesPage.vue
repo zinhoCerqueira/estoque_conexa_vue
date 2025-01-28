@@ -6,8 +6,14 @@
 
         
         <div class="home">
-            <div>
+            <div style="display: flex; justify-content: space-between;">
                 <p class="title-page">Lista de Compras</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <button class="back-button" @click="backToHome()">
+                        <i class="fa-solid fa-angles-left" style="margin-right: 5px;"></i>
+                        Voltar
+                    </button>                
+                </div>
             </div>
 
             <div>
@@ -54,6 +60,11 @@ export default{
         }
     },
     methods:{
+        backToHome(){
+            localStorage.setItem("currentPage", "HomePage")
+            window.location.reload();
+        },
+
         async fetchPedidosBD(){
             try {            
                 const response = await axios.get('http://localhost/estoque_conexa_php/index.php?r=pedido/getPedidosBD');
@@ -90,6 +101,19 @@ export default{
 
 
 <style scoped>
+
+.back-button{
+    padding: 10px 20px;
+    background-color: #d8781e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Montserrat', Arial, sans-serif;
+    transition: opacity 0.3s ease;
+}
+
 
 .title-page {
     font-size: 1.4rem; 

@@ -66,23 +66,5 @@
   .logout-button:hover {
     opacity: 0.9;
   }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  
-    .menu {
-      justify-content: flex-start;
-      margin-top: 15px;
-    }
-  
-    .logout-button {
-      margin-top: 15px;
-      align-self: flex-end;
-    }
-  }
   </style>
   

@@ -291,6 +291,7 @@
           // Verificar resposta
           if (response.data.success) {
             console.log("Compra realizada com sucesso!");
+            this.closeModal();
             // Você pode adicionar alguma lógica de sucesso aqui, como redirecionar ou limpar o carrinho
           } else {
             console.error("Erro ao realizar compra:", response);
