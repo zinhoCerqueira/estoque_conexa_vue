@@ -48,14 +48,14 @@
             />
   
             <label for="password">Senha</label>
-            <input
-              type="password"
-              id="password"
-              v-model="form.password"
-              placeholder="Digite sua senha"
-              required
-            />
-  
+              <input
+                type= "password"
+                id="password"
+                v-model="form.password"
+                placeholder="Digite sua senha"
+                required
+              />
+
             <div class="form-buttons">
               <button type="submit">Login</button>
               <button type="button" @click="goToRegister">Cadastro</button>
@@ -126,7 +126,7 @@
       },
 
       goToRegister() {
-        // Redirecionar para a página de cadastro
+
       },
     },
   

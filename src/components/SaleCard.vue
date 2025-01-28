@@ -225,13 +225,14 @@
         const produtosCarrinho = this.carrinhoAtual.map(produto => ({
           productID: produto.productID,
           quantidade: produto.quantidade,
+          price: produto.price
         }));
         
         formData.append('productList', JSON.stringify(produtosCarrinho)); // Lista de produtos no carrinho
 
         try {
           const response = await axios.post(
-            "http://localhost/estoque_conexa_php/index.php?r=compra/create", // URL do endpoint
+            "http://localhost/estoque_conexa_php/index.php?r=pedido/create", // URL do endpoint
             formData,
             {
               headers: {
@@ -245,7 +246,7 @@
             console.log("Compra realizada com sucesso!");
             // Você pode adicionar alguma lógica de sucesso aqui, como redirecionar ou limpar o carrinho
           } else {
-            console.error("Erro ao realizar compra:", response.data.message);
+            console.error("Erro ao realizar compra:", response);
           }
 
         } catch (error) {
