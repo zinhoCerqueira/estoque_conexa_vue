@@ -15,6 +15,7 @@
               <th>Preço</th>
               <th>Quantidade</th>
               <th>Total</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -24,9 +25,28 @@
               <td>{{ Number(produto.price).toFixed(2) }}</td>
               <td>{{ produto.quantidade }}</td>
               <td>{{ Number(produto.price * produto.quantidade).toFixed(2) }}</td>
+              <td >
+
+                <button 
+                  @click="retirarItem(produto)" 
+                  :disabled="produto.quantidade <= 0"
+                  title="Retirar 1 item"
+                  class="btn-remover"
+                >
+                  -
+                </button>
+                <button 
+                  @click="removerTodos(produto)" 
+                  class="btn-remover" 
+                  title="Remover todos os itens"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
+
 
         <div class="total-container">
 
@@ -149,6 +169,32 @@
     },
 
     methods: {
+      retirarItem(produto) {
+        produto.quantidade -= 1;
+
+        const produtoEstoque = this.produtos.find((item) => item.id === produto.id);
+        if (produtoEstoque) {
+          produtoEstoque.quantidade += 1;
+        }
+
+        if (produto.quantidade === 0) {
+          this.carrinhoAtual = this.carrinhoAtual.filter(
+            (item) => item.id !== produto.id
+          );
+        }
+      },
+      
+      removerTodos(produto) {
+        const produtoEstoque = this.produtos.find((item) => item.id === produto.id);
+        if (produtoEstoque) {
+          produtoEstoque.quantidade += produto.quantidade;
+        }
+
+        this.carrinhoAtual = this.carrinhoAtual.filter(
+          (item) => item.id !== produto.id
+        );
+      },
+
       buscarProduto() {
         if (this.termoBusca.length >= 3) {
           const termo = this.termoBusca.toLowerCase();
@@ -165,12 +211,11 @@
           (item) => item.productID === produto.productID
         );
 
-        console.log(produto);
-
         if (!produtoNoCarrinho && quantidade < 0) {
-          console.warn("Tentativa de remover um item que não está no carrinho.");
-          return; // Impede remoções de itens que não existem no carrinho
+          alert("Tentándo remover um item que não está no carrinho.");
+          return;
         }
+
 
         // Atualizar estoque (somente para adição de itens)
         if (quantidade > 0) {
@@ -190,18 +235,15 @@
         if (produtoNoCarrinho) {
           produtoNoCarrinho.quantidade += quantidade;
 
-          // Remover item do carrinho se a quantidade final for <= 0
           if (produtoNoCarrinho.quantidade <= 0) {
             this.carrinhoAtual = this.carrinhoAtual.filter(
               (item) => item.productID !== produto.productID
             );
           }
         } else if (quantidade > 0) {
-          // Adicionar novo item ao carrinho apenas se a quantidade for positiva
           this.carrinhoAtual.push({ ...produto, quantidade });
         }
 
-        console.log(this.carrinhoAtual);
       },
 
       closeModal() {
@@ -217,8 +259,8 @@
 
         // Preparar os dados a serem enviados
         const formData = new URLSearchParams();
-        formData.append('customerId', this.customerId); // ID do cliente
-        formData.append('requesterId', this.requesterId); // ID do solicitante
+        formData.append('customerId', this.customerId); 
+        formData.append('requesterId', this.requesterId); 
         formData.append('authToken', localStorage.getItem('accessToken'));
 
         // Preparar o carrinho no formato correto
@@ -228,15 +270,15 @@
           price: produto.price
         }));
         
-        formData.append('productList', JSON.stringify(produtosCarrinho)); // Lista de produtos no carrinho
+        formData.append('productList', JSON.stringify(produtosCarrinho));
 
         try {
           const response = await axios.post(
-            "http://localhost/estoque_conexa_php/index.php?r=pedido/create", // URL do endpoint
+            "http://localhost/estoque_conexa_php/index.php?r=pedido/create", 
             formData,
             {
               headers: {
-                'Content-Type': 'application/x-www-form-urlencoded', // Definir o tipo de conteúdo como URL-encoded
+                'Content-Type': 'application/x-www-form-urlencoded', 
               },
             }
           );
