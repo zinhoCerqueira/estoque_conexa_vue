@@ -71,7 +71,11 @@
           </td>
           <td>R$ {{ parseFloat(item.price).toFixed(2) }}</td>
           <td style="text-align: center;" >{{ item.quantidade }}</td>
-          <td style="text-align: center;">{{ item.active ? '✅' : '❌' }}</td>
+          <td style="text-align: center;">
+            <span :class="item.active ? 'status-label-active' : 'status-label-inactive'">
+              {{ item.active ? 'Sim' : 'Não' }}
+            </span>
+          </td>
           <td>{{ formatarData(item.createdAt) }}</td>
           <td>{{ formatarData(item.updatedAt) }}</td>
           <td class="actions">
@@ -197,6 +201,24 @@ export default {
 </script>
 
 <style scoped>
+
+.status-label-active {
+  background-color: rgb(51, 189, 51);
+  color: white;
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+.status-label-inactive{
+  background-color: rgb(236, 73, 44);
+  color: white;
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  margin-left: 10px;
+}
 
 .product-name {
   display: flex;
