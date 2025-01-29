@@ -5,7 +5,7 @@
           <h2>Confirmar Inativação</h2>
           <button class="close-button" @click="closeModal">X</button>
         </div>
-        <p>Tem certeza que deseja inativar o item "{{ item.name }}"?</p>
+        <p>Tem certeza que deseja mudar o status de "{{ item.name }}"?</p>
         <div class="modal-actions">
           <button class="confirm-button" @click="confirmInactivation">Sim</button>
           <button class="cancel-button" @click="closeModal">Cancelar</button>

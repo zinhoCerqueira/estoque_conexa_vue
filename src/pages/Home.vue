@@ -85,11 +85,21 @@
           <td >
             <div class="actions">
               <i class="fas fa-edit edit-icon"></i>
+
               <i 
+                v-if="item.active" 
                 class="fas fa-ban inactive-icon" 
                 @click="openInactivationModal(item)" 
                 title="Desativar item">
               </i>
+
+              <i 
+                v-else 
+                class="fas fa-check-circle inative-icon" 
+                @click="openInactivationModal(item)" 
+                title="Ativar item">
+              </i>
+
             </div>
           </td>
         </tr>
@@ -137,10 +147,10 @@ export default {
       try {
         const response = await axios.post('http://localhost/estoque_conexa_php/index.php?r=produto/InactiveProduto', data);
 
-        console.log(data)
+        console.log(response)
 
-        if (response.data.success) {
-          window.location.reload();
+        if (response.status === 200) {
+          // window.location.reload();
         } else {
           console.log(response)
           alert("Erro ao inativar o produto: " + response.data.message);
@@ -153,9 +163,15 @@ export default {
     },
 
     openInactivationModal(item) {
+      if (!item.active && item.quantidade === 0) {
+        alert("O item não pode ser ativado, pois sua quantidade é 0.");
+        return;
+      }
+
       this.selectedItem = item;
       this.showInactivationModal = true;
     },
+
 
     changeSalePage(){
       localStorage.setItem('currentPage', 'SalesPage')
