@@ -78,9 +78,11 @@
           </td>
           <td>{{ formatarData(item.createdAt) }}</td>
           <td>{{ formatarData(item.updatedAt) }}</td>
-          <td class="actions">
-            <i class="fas fa-edit edit-icon"></i>
-            <i class="fas fa-trash-alt delete-icon"></i>
+          <td >
+            <div class="actions">
+              <i class="fas fa-edit edit-icon"></i>
+              <i class="fas fa-ban inactive-icon"></i>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -296,12 +298,9 @@ export default {
   color: #0056b3; 
 }
 
-.delete-icon {
-  color: #dc3545; 
-}
-
-.delete-icon:hover {
-  color: #c82333; 
+.inactive-icon {
+  color: gray; /* cor que simboliza inatividade */
+  font-size: 18px;
 }
 
 .header {
