@@ -62,7 +62,13 @@
       </thead>
       <tbody>
         <tr v-for="item in produtos" :key="item.productID">
-          <td>{{ item.name }}</td>
+          <td>
+            <div class="product-name">
+              <span>{{ item.name }}</span>
+              <span v-if="item.is_new === 1" class="new-label">Novo</span>
+            </div>
+          
+          </td>
           <td>R$ {{ parseFloat(item.price).toFixed(2) }}</td>
           <td style="text-align: center;" >{{ item.quantidade }}</td>
           <td style="text-align: center;">{{ item.active ? '✅' : '❌' }}</td>
@@ -160,11 +166,10 @@ export default {
       try {
         let data = new URLSearchParams();
         data.append('authToken', localStorage.getItem('accessToken'));
-
         const response = await axios.post('http://localhost/estoque_conexa_php/index.php?r=produto/getproductsapi', data);
         this.produtos = response.data.data;
+        console.log(this.produtos)
 
-        
       } catch (error) {
 
         console.error('Erro ao buscar os produtos:', error);
@@ -192,6 +197,22 @@ export default {
 </script>
 
 <style scoped>
+
+.product-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.new-label {
+  background-color: rgb(51, 189, 51);
+  color: white;
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
   .welcome {
     font-size: 1.4rem; 
     font-weight: 600; 
