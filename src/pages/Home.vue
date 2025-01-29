@@ -12,9 +12,6 @@
 
       <div>
         <div style="display: flex; justify-content: flex-end;">    
-          <button class="add-item-button" @click="fetchProdutosAPI" style="margin-right: 7px;">
-            <i class="fas fa-sync-alt"></i> 
-          </button>
       
           <button class="add-item-button" @click="changeSalePage" style="margin-right: 7px;">
             <i class="fa-solid fa-money-check-dollar" style="margin-right: 5px;"></i> Histórico
@@ -43,6 +40,13 @@
             :produtos="produtos"
             @close="closeRegister"
             @submit="addItem"
+          />
+
+          <InativeItemCard
+            :isVisible="showInactivationModal"
+            :item="selectedItem"
+            @close="showInactivationModal = false"
+            @confirm="inactivateItem"
           />
         </div>
       </div>
@@ -81,7 +85,11 @@
           <td >
             <div class="actions">
               <i class="fas fa-edit edit-icon"></i>
-              <i class="fas fa-ban inactive-icon"></i>
+              <i 
+                class="fas fa-ban inactive-icon" 
+                @click="openInactivationModal(item)" 
+                title="Desativar item">
+              </i>
             </div>
           </td>
         </tr>
@@ -102,12 +110,14 @@ import axios from "axios";
 import RegisterCard from "../components/RegisterCard.vue";
 import SaleCard from "../components/SaleCard.vue";
 import Header from "../components/Header.vue"
+import InativeItemCard from "../components/InativeItemCard.vue";
 
 export default {
   components: {
     RegisterCard,
     SaleCard,
-    Header
+    Header,
+    InativeItemCard
   },
   data() {
     return {
@@ -115,10 +125,38 @@ export default {
       produtos: [],
       user: localStorage.getItem("user") || { name: "Usuário" },
       showCart: false,
+      showInactivationModal: false,
+      selectedItem: {},
     };
   },
 
   methods: {
+    async inactivateItem(item) {
+      let data = new URLSearchParams();
+      data.append('productID', item.productID);
+      try {
+        const response = await axios.post('http://localhost/estoque_conexa_php/index.php?r=produto/InactiveProduto', data);
+
+        console.log(data)
+
+        if (response.data.success) {
+          window.location.reload();
+        } else {
+          console.log(response)
+          alert("Erro ao inativar o produto: " + response.data.message);
+        }
+      } catch (error) {
+        console.error("Erro ao inativar o produto:", error);
+      }
+
+      this.showInactivationModal = false;
+    },
+
+    openInactivationModal(item) {
+      this.selectedItem = item;
+      this.showInactivationModal = true;
+    },
+
     changeSalePage(){
       localStorage.setItem('currentPage', 'SalesPage')
       window.location.reload();
@@ -133,6 +171,7 @@ export default {
       const minutos = String(dataObj.getMinutes()).padStart(2, '0');
       return `${dia}/${mes}/${ano} às ${horas}:${minutos}`;
     },
+
     showCartCart() {
       this.showCart = true;
     },
@@ -237,13 +276,13 @@ export default {
   margin-left: 10px;
 }
 
-  .welcome {
-    font-size: 1.4rem; 
-    font-weight: 600; 
-    color: #333;
-    margin: 10px 0;
-    font-family: 'Montserrat', Arial, sans-serif;
-  }
+.welcome {
+  font-size: 1.4rem; 
+  font-weight: 600; 
+  color: #333;
+  margin: 10px 0;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
 
 .add-item-button {
   background-color: #d8781e; 
