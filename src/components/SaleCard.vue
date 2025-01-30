@@ -100,7 +100,7 @@
                   >
                     <td>{{ produto.name }}</td>
                     <td>{{ produto.quantidade }}</td>
-                    <td>R$ {{ Number(produto.price).toFixed(2) }}</td>
+                    <td>{{ formatCurrency(produto.price) }}</td>
                     <td>
                       <div style="display: flex; align-items: center; justify-content: center;">
                         <button
@@ -169,6 +169,14 @@
     },
 
     methods: {
+      formatCurrency(value) {
+        if (!value) return "R$ 0,00"; 
+        return new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(value);
+      },
+
       retirarItem(produto) {
         produto.quantidade -= 1;
 

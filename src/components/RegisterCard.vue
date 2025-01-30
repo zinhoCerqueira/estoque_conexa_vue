@@ -2,7 +2,7 @@
   <div v-if="isVisible" class="modal-overlay">
     <div class="modal-card">
       <div class="register-header">
-        <h2>Cadastre um novo item</h2>
+        <h2>Selecione um item</h2>
         <button class="close-button" @click="closeModal">X</button>
       </div>
       <form @submit.prevent="handleSubmit">

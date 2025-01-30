@@ -38,7 +38,7 @@
                         <td>{{ item.pedidoID }}</td>
                         <td>{{ item.nameCustomer}} ({{ item.customerId }})</td>
                         <td>{{ item.nameRequester }} ({{ item.requesterId }})</td>
-                        <td>{{ item.totalPrice }}</td>
+                        <td>{{ formatCurrency(item.totalPrice) }}</td>
                         <td>{{ formatarData(item.createdAt) }}</td>
                         
                         </tr>
@@ -66,41 +66,49 @@ export default{
         }
     },
     methods:{
-        backToHome(){
-            localStorage.setItem("currentPage", "HomePage")
-            window.location.reload();
-        },
+      backToHome(){
+          localStorage.setItem("currentPage", "HomePage")
+          window.location.reload();
+      },
 
-        async fetchPedidosBD(){
-          this.loading = true;
-          try {      
-              let data = new URLSearchParams();
-              data.append("authToken", localStorage.getItem("accessToken"));      
-              const response = await axios.post('http://localhost/estoque_conexa_php/index.php?r=pedido/getPedidosBD', data);
-              this.pedidos = response.data.data;  
-              console.log(this.pedidos);
-          } catch (error) {
-              console.error('Erro ao buscar os produtos:', error);
-          }
-          finally {
-            this.loading = false;
-          }
-        },
+      async fetchPedidosBD(){
+        this.loading = true;
+        try {      
+            let data = new URLSearchParams();
+            data.append("authToken", localStorage.getItem("accessToken"));      
+            const response = await axios.post('http://localhost/estoque_conexa_php/index.php?r=pedido/getPedidosBD', data);
+            this.pedidos = response.data.data;  
+            console.log(this.pedidos);
+        } catch (error) {
+            console.error('Erro ao buscar os produtos:', error);
+        }
+        finally {
+          this.loading = false;
+        }
+      },
 
-        logout() {
-            localStorage.clear();
-            window.location.reload();
-        },
+      logout() {
+          localStorage.clear();
+          window.location.reload();
+      },
 
-        formatarData(data) {
-            const dataObj = new Date(data);
-            const dia = String(dataObj.getDate()).padStart(2, '0');
-            const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
-            const ano = dataObj.getFullYear();
-            const horas = String(dataObj.getHours()).padStart(2, '0');
-            const minutos = String(dataObj.getMinutes()).padStart(2, '0');
-            return `${dia}/${mes}/${ano} às ${horas}:${minutos}`;
-        },
+      formatarData(data) {
+          const dataObj = new Date(data);
+          const dia = String(dataObj.getDate()).padStart(2, '0');
+          const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+          const ano = dataObj.getFullYear();
+          const horas = String(dataObj.getHours()).padStart(2, '0');
+          const minutos = String(dataObj.getMinutes()).padStart(2, '0');
+          return `${dia}/${mes}/${ano} às ${horas}:${minutos}`;
+      },
+
+      formatCurrency(value) {
+        if (!value) return "R$ 0,00"; 
+        return new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(value);
+      },
 
     },
     mounted() {

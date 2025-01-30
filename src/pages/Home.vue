@@ -24,7 +24,8 @@
               Realizar venda
             </button>
 
-            <div>
+            <div class="search-container">
+              <i class="fas fa-search search-icon"></i>
               <input
                 type="text"
                 v-model="termoBusca"
@@ -68,7 +69,7 @@
                 <span v-if="item.is_new === 1" class="new-label">Novo</span>
               </div>
             </td>
-            <td>R$ {{ parseFloat(item.price).toFixed(2) }}</td>
+            <td>{{ formatCurrency(item.price) }}</td>
             <td style="text-align: center;">{{ item.quantidade }}</td>
             <td style="text-align: center;">
               <span :class="item.active ? 'status-label-active' : 'status-label-inactive'">
@@ -80,18 +81,24 @@
             <td>
               <div class="actions">
                 <i class="fas fa-edit edit-icon"></i>
+                
                 <i 
                   v-if="item.active" 
-                  class="fas fa-ban inactive-icon" 
+                  class="fas fa-ban active-icon" 
                   @click="openInactivationModal(item)" 
                   title="Desativar item">
                 </i>
+                
                 <i 
                   v-else 
                   class="fas fa-check-circle inactive-icon" 
                   @click="openInactivationModal(item)" 
                   title="Ativar item">
                 </i>
+
+                <i class="fa-regular fa-eye view-icon"
+                  title="Ver detalhes"
+                ></i>
               </div>
             </td>
           </tr>
@@ -130,6 +137,13 @@ export default {
   },
 
   methods: {
+    formatCurrency(value) {
+      if (!value) return "R$ 0,00"; 
+      return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(value);
+    },
 
     buscarProduto() {
       if (this.termoBusca.length >= 3) {
@@ -224,22 +238,46 @@ export default {
 
 <style scoped>
 
-.search-input {
-  background-color: white;
-  color: #333; 
-  border: 1px solid #f4a261; 
-  padding: 10px 20px;
-  border-radius: 4px;
-  outline: none; 
-  cursor: text;
-  margin-bottom: 5px;
-  font-size: 16px;
+.view-icon {
+  color: #007bff;
+  cursor: pointer;
+}
+
+.view-icon:hover {
+  color: #0056b3; 
+}
+
+.search-container {
+  position: relative;
+  display: inline-block;
   margin-left: 7px;
 }
 
-.search-input:focus {
-  border-color: #e76f51; /* Cor mais escura da borda ao focar */
+.search-input {
+  background-color: white;
+  color: #333;
+  border: 1px solid #f4a261;
+  padding: 10px 20px;
+  padding-left: 30px;
+  border-radius: 4px;
+  outline: none;
+  cursor: text;
+  margin-bottom: 5px;
+  font-size: 16px;
 }
+
+.search-input:focus {
+  border-color: #e76f51;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #f4a261; /* Cor laranja para o ícone */
+}
+
 
 .status-label-active {
   background-color: rgb(51, 189, 51);
@@ -326,7 +364,6 @@ export default {
 
 .edit-icon {
   color: #007bff; 
-  margin-right: 10px;
 }
 
 .edit-icon:hover {
@@ -334,8 +371,11 @@ export default {
 }
 
 .inactive-icon {
-  color: gray; /* cor que simboliza inatividade */
-  font-size: 18px;
+  color: rgb(63, 211, 71); 
+}
+
+.active-icon {
+  color: rgb(240, 73, 73); 
 }
 
 .header {
