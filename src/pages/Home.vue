@@ -6,120 +6,96 @@
 
     <div class="home">
       <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; margin-top: 25px;">
-      <div>
-        <p class="welcome">Bem-vindo, {{ user }}!</p>
-      </div>
+        <div>
+          <p class="welcome">Bem-vindo, {{ user }}!</p>
+        </div>
 
-      <div>
-        <div style="display: flex; justify-content: flex-end;">    
-      
-          <button class="add-item-button" @click="changeSalePage" style="margin-right: 7px;">
-            <i class="fa-solid fa-money-check-dollar" style="margin-right: 5px;"></i> Histórico
-          </button>
-      
-          <button class="add-item-button" @click="openRegister" style="margin-right: 7px;">
-            <i class="fa-solid fa-box-open" style="margin-right: 5px;"></i>
-            Abastecer estoque
-          </button>
-      
-          <button class="add-item-button" @click="showCartCart()">
-            <i class="fa-solid fa-cart-shopping" style="margin-right: 5px;"></i>
-            Realizar venda
-          </button>
-          
-          <SaleCard 
-            v-if="showCart"
-            :isCartVisible="showCart" 
-            :produtos="produtos" 
-            @close="closeCart"
-          />
-              
-          <RegisterCard
-            v-if="isRegisterOpen"
-            :isVisible="isRegisterOpen"
-            :produtos="produtos"
-            @close="closeRegister"
-            @submit="addItem"
-          />
+        <div>
+          <div style="display: flex; justify-content: flex-end;">
+            <button class="add-item-button" @click="changeSalePage" style="margin-right: 7px;">
+              <i class="fa-solid fa-money-check-dollar" style="margin-right: 5px;"></i> Histórico
+            </button>
+            <button class="add-item-button" @click="openRegister" style="margin-right: 7px;">
+              <i class="fa-solid fa-box-open" style="margin-right: 5px;"></i>
+              Abastecer estoque
+            </button>
+            <button class="add-item-button" @click="showCartCart()">
+              <i class="fa-solid fa-cart-shopping" style="margin-right: 5px;"></i>
+              Realizar venda
+            </button>
 
-          <InativeItemCard
-            :isVisible="showInactivationModal"
-            :item="selectedItem"
-            @close="showInactivationModal = false"
-            @confirm="inactivateItem"
-          />
+            <SaleCard v-if="showCart" :isCartVisible="showCart" :produtos="produtos" @close="closeCart" />
+            <RegisterCard v-if="isRegisterOpen" :isVisible="isRegisterOpen" :produtos="produtos" @close="closeRegister"/>
+            <InativeItemCard :isVisible="showInactivationModal" :item="selectedItem" @close="showInactivationModal = false" @confirm="inactivateItem" />
+          </div>
         </div>
       </div>
-  </div>
 
-    <table class="items-table">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Preço</th>
-          <th style="text-align: center;">Quantidade</th>
-          <th style="text-align: center;">Ativo</th>
-          <th>Criado em</th>
-          <th>Atualizado em</th>
-          <th style="text-align: center;">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in produtos" :key="item.productID">
-          <td>
-            <div class="product-name">
-              <span>{{ item.name }}</span>
-              <span v-if="item.is_new === 1" class="new-label">Novo</span>
-            </div>
-          
-          </td>
-          <td>R$ {{ parseFloat(item.price).toFixed(2) }}</td>
-          <td style="text-align: center;" >{{ item.quantidade }}</td>
-          <td style="text-align: center;">
-            <span :class="item.active ? 'status-label-active' : 'status-label-inactive'">
-              {{ item.active ? 'Sim' : 'Não' }}
-            </span>
-          </td>
-          <td>{{ formatarData(item.createdAt) }}</td>
-          <td>{{ formatarData(item.updatedAt) }}</td>
-          <td >
-            <div class="actions">
-              <i class="fas fa-edit edit-icon"></i>
+      <!-- Loading Spinner -->
+      <div v-if="loading" class="loading-container">
+        <div class="spinner"></div>
+        <p>Carregando produtos...</p>
+      </div>
 
-              <i 
-                v-if="item.active" 
-                class="fas fa-ban inactive-icon" 
-                @click="openInactivationModal(item)" 
-                title="Desativar item">
-              </i>
-
-              <i 
-                v-else 
-                class="fas fa-check-circle inactive-icon" 
-                @click="openInactivationModal(item)" 
-                title="Ativar item">
-              </i>
-
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- Tabela de produtos -->
+      <table v-else class="items-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th style="text-align: center;">Quantidade</th>
+            <th style="text-align: center;">Ativo</th>
+            <th>Criado em</th>
+            <th>Atualizado em</th>
+            <th style="text-align: center;">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in produtos" :key="item.productID">
+            <td>
+              <div class="product-name">
+                <span>{{ item.name }}</span>
+                <span v-if="item.is_new === 1" class="new-label">Novo</span>
+              </div>
+            </td>
+            <td>R$ {{ parseFloat(item.price).toFixed(2) }}</td>
+            <td style="text-align: center;">{{ item.quantidade }}</td>
+            <td style="text-align: center;">
+              <span :class="item.active ? 'status-label-active' : 'status-label-inactive'">
+                {{ item.active ? 'Sim' : 'Não' }}
+              </span>
+            </td>
+            <td>{{ formatarData(item.createdAt) }}</td>
+            <td>{{ formatarData(item.updatedAt) }}</td>
+            <td>
+              <div class="actions">
+                <i class="fas fa-edit edit-icon"></i>
+                <i 
+                  v-if="item.active" 
+                  class="fas fa-ban inactive-icon" 
+                  @click="openInactivationModal(item)" 
+                  title="Desativar item">
+                </i>
+                <i 
+                  v-else 
+                  class="fas fa-check-circle inactive-icon" 
+                  @click="openInactivationModal(item)" 
+                  title="Ativar item">
+                </i>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-
-
-
   </div>
 </template>
 
-
 <script>
-
 import axios from "axios";
 import RegisterCard from "../components/RegisterCard.vue";
 import SaleCard from "../components/SaleCard.vue";
-import Header from "../components/Header.vue"
+import Header from "../components/Header.vue";
 import InativeItemCard from "../components/InativeItemCard.vue";
 
 export default {
@@ -127,38 +103,37 @@ export default {
     RegisterCard,
     SaleCard,
     Header,
-    InativeItemCard
+    InativeItemCard,
   },
   data() {
     return {
       isRegisterOpen: false,
       produtos: [],
-      user: localStorage.getItem("user") || { name: "Usuário" },
+      user: localStorage.getItem("user") || "Usuário",
       showCart: false,
       showInactivationModal: false,
       selectedItem: {},
+      loading: false, // Estado do loader
     };
   },
 
   methods: {
     async inactivateItem(item) {
       let data = new URLSearchParams();
-      data.append('productID', item.productID);
+      data.append("productID", item.productID);
       try {
-        const response = await axios.post('http://localhost/estoque_conexa_php/index.php?r=produto/InactiveProduto', data);
-
-        console.log(response)
-
+        const response = await axios.post(
+          "http://localhost/estoque_conexa_php/index.php?r=produto/InactiveProduto",
+          data
+        );
         if (response.status === 200) {
           window.location.reload();
         } else {
-          console.log(response)
           alert("Erro ao inativar o produto: " + response.data.message);
         }
       } catch (error) {
         console.error("Erro ao inativar o produto:", error);
       }
-
       this.showInactivationModal = false;
     },
 
@@ -167,25 +142,18 @@ export default {
         alert("O item não pode ser ativado, pois sua quantidade é 0.");
         return;
       }
-
       this.selectedItem = item;
       this.showInactivationModal = true;
     },
 
-
-    changeSalePage(){
-      localStorage.setItem('currentPage', 'SalesPage')
+    changeSalePage() {
+      localStorage.setItem("currentPage", "SalesPage");
       window.location.reload();
     },
 
     formatarData(data) {
       const dataObj = new Date(data);
-      const dia = String(dataObj.getDate()).padStart(2, '0');
-      const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
-      const ano = dataObj.getFullYear();
-      const horas = String(dataObj.getHours()).padStart(2, '0');
-      const minutos = String(dataObj.getMinutes()).padStart(2, '0');
-      return `${dia}/${mes}/${ano} às ${horas}:${minutos}`;
+      return dataObj.toLocaleString("pt-BR");
     },
 
     showCartCart() {
@@ -204,50 +172,22 @@ export default {
       this.isRegisterOpen = false;
     },
 
-    addItem(newItem) {
-      axios.post('http://localhost/estoque_conexa_php/index.php?r=ProdutoController/actionAddProduto', newItem)
-        .then(response => {
-          if (response.data.status === 'success') {
-            this.items.push(newItem);
-          } else {
-            console.error('Erro ao adicionar item:', response.data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Erro de comunicação com o backend:', error);
-        });
-    },
-
-    logout() {
-      localStorage.clear();
-      window.location.reload();
-    },
-
-    async fetchProdutosAPI(){
+    async fetchProdutosAPI() {
+      this.loading = true;
       try {
         let data = new URLSearchParams();
-        data.append('authToken', localStorage.getItem('accessToken'));
-        const response = await axios.post('http://localhost/estoque_conexa_php/index.php?r=produto/getproductsapi', data);
+        data.append("authToken", localStorage.getItem("accessToken"));
+        const response = await axios.post(
+          "http://localhost/estoque_conexa_php/index.php?r=produto/getproductsapi",
+          data
+        );
         this.produtos = response.data.data;
-        console.log(this.produtos)
-
       } catch (error) {
-
-        console.error('Erro ao buscar os produtos:', error);
+        console.error("Erro ao buscar os produtos:", error);
+      } finally {
+        this.loading = false;
       }
     },
-
-    async fetchProdutosBD(){
-      try {
-        
-        const response = await axios.get('http://localhost/estoque_conexa_php/index.php?r=produto/getproductsbd');
-        this.produtos = response.data.data;
-        
-      } catch (error) {
-
-        console.error('Erro ao buscar os produtos:', error);
-      }
-    }
 
   },
 
@@ -436,4 +376,31 @@ body {
 .items-table tr:hover {
   background-color: #f1f1f1;
 }
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc;
+  border-top: 5px solid #d8781e;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 </style>

@@ -381,7 +381,7 @@
     background-color: transparent;
     border: 1px solid lightcoral;
     color: lightcoral;
-    padding: 5px 12px;
+    padding: 1px 10px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 18px;
@@ -392,7 +392,7 @@
     background-color: transparent;
     border: 1px solid lightblue;
     color: lightblue;
-    padding: 5px 10px;
+    padding: 1px 9px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 18px;
@@ -418,7 +418,7 @@
   .items-table th,
   .items-table td {
     border: 1px solid #ddd;
-    padding: 10px 12px;
+    padding: 5px 12px;
     font-weight: normal;
     text-align: left;
     word-wrap: break-word;

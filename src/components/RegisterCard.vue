@@ -95,8 +95,6 @@ export default {
         produto.append("novoPreco", this.itemNovoPreco);
       }
 
-      console.log(produto)
-
       try {
         const response = await axios.post(
           "http://localhost/estoque_conexa_php/index.php?r=produto/updateProduto",
@@ -107,9 +105,9 @@ export default {
             },
           }
         );
-
+        console.log(response)
         // Verifica a resposta
-        if (response.status === 200 && response.data.success) {
+        if (response.status === 200) {
           alert("Produto atualizado com sucesso!");
         } else {
           alert("Erro ao atualizar o produto: " + response.data.message);
