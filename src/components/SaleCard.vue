@@ -95,7 +95,7 @@
               <table class="items-table">
                 <tbody>
                   <tr 
-                    v-for="produto in produtosFiltrados.filter(p => p.quantidade > 0)" 
+                    v-for="produto in produtosFiltrados.filter(p => p.quantidade > 0 && p.active)" 
                     :key="produto.id"
                   >
                     <td>{{ produto.name }}</td>
@@ -292,7 +292,7 @@
           if (response.data.success) {
             console.log("Compra realizada com sucesso!");
             this.closeModal();
-            // Você pode adicionar alguma lógica de sucesso aqui, como redirecionar ou limpar o carrinho
+            window.location.reload();
           } else {
             console.error("Erro ao realizar compra:", response);
           }

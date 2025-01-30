@@ -16,7 +16,12 @@
                 </div>
             </div>
 
-            <div>
+            <div v-if="loading" class="loading-container">
+              <div class="spinner"></div>
+              <p>Carregando a lista de pedidos...</p>
+            </div>
+
+            <div v-else>
                 <table class="items-table">
                     <thead>
                         <tr>
@@ -31,8 +36,8 @@
                     <tbody>
                         <tr v-for="item in pedidos" :key="item.pedidoID">
                         <td>{{ item.pedidoID }}</td>
-                        <td>{{ item.customerId }}</td>
-                        <td>{{ item.requesterId }}</td>
+                        <td>{{ item.nameCustomer}} ({{ item.customerId }})</td>
+                        <td>{{ item.nameRequester }} ({{ item.requesterId }})</td>
                         <td>{{ item.totalPrice }}</td>
                         <td>{{ formatarData(item.createdAt) }}</td>
                         
@@ -56,7 +61,8 @@ export default{
     },
     data(){
         return{
-            pedidos:[]
+            pedidos:[],
+            loading: false,
         }
     },
     methods:{
@@ -66,13 +72,19 @@ export default{
         },
 
         async fetchPedidosBD(){
-            try {            
-                const response = await axios.get('http://localhost/estoque_conexa_php/index.php?r=pedido/getPedidosBD');
-                this.pedidos = response.data.data;  
-                console.log(this.pedidos);
-            } catch (error) {
-                console.error('Erro ao buscar os produtos:', error);
-            }
+          this.loading = true;
+          try {      
+              let data = new URLSearchParams();
+              data.append("authToken", localStorage.getItem("accessToken"));      
+              const response = await axios.post('http://localhost/estoque_conexa_php/index.php?r=pedido/getPedidosBD', data);
+              this.pedidos = response.data.data;  
+              console.log(this.pedidos);
+          } catch (error) {
+              console.error('Erro ao buscar os produtos:', error);
+          }
+          finally {
+            this.loading = false;
+          }
         },
 
         logout() {
@@ -101,6 +113,32 @@ export default{
 
 
 <style scoped>
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc;
+  border-top: 5px solid #d8781e;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
 
 .back-button{
     padding: 10px 20px;

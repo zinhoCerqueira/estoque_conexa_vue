@@ -113,7 +113,7 @@ export default {
       showCart: false,
       showInactivationModal: false,
       selectedItem: {},
-      loading: false, // Estado do loader
+      loading: false,
     };
   },
 
@@ -205,7 +205,6 @@ export default {
   padding: 2px 8px;
   font-size: 12px;
   border-radius: 5px;
-  margin-left: 10px;
 }
 
 .status-label-inactive{
@@ -214,7 +213,6 @@ export default {
   padding: 2px 8px;
   font-size: 12px;
   border-radius: 5px;
-  margin-left: 10px;
 }
 
 .product-name {

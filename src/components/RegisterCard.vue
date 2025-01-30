@@ -109,6 +109,7 @@ export default {
         // Verifica a resposta
         if (response.status === 200) {
           alert("Produto atualizado com sucesso!");
+          window.location.reload();
         } else {
           alert("Erro ao atualizar o produto: " + response.data.message);
         }
