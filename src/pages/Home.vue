@@ -24,6 +24,16 @@
               Realizar venda
             </button>
 
+            <div>
+              <input
+                type="text"
+                v-model="termoBusca"
+                @input="buscarProduto"
+                placeholder="Busque um item"
+                class="search-input"
+              />
+            </div>
+
             <SaleCard v-if="showCart" :isCartVisible="showCart" :produtos="produtos" @close="closeCart" />
             <RegisterCard v-if="isRegisterOpen" :isVisible="isRegisterOpen" :produtos="produtos" @close="closeRegister"/>
             <InativeItemCard :isVisible="showInactivationModal" :item="selectedItem" @close="showInactivationModal = false" @confirm="inactivateItem" />
@@ -51,7 +61,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in produtos" :key="item.productID">
+          <tr v-for="item in produtosFiltrados" :key="item.productID">
             <td>
               <div class="product-name">
                 <span>{{ item.name }}</span>
@@ -114,10 +124,24 @@ export default {
       showInactivationModal: false,
       selectedItem: {},
       loading: false,
+      produtosFiltrados: [],
+      termoBusca: "",
     };
   },
 
   methods: {
+
+    buscarProduto() {
+      if (this.termoBusca.length >= 3) {
+        const termo = this.termoBusca.toLowerCase();
+        this.produtosFiltrados = this.produtos.filter((produto) =>
+          produto.name.toLowerCase().includes(termo)
+        );
+      } else {
+        this.produtosFiltrados = this.produtos;
+      }
+    },
+
     async inactivateItem(item) {
       let data = new URLSearchParams();
       data.append("productID", item.productID);
@@ -182,6 +206,7 @@ export default {
           data
         );
         this.produtos = response.data.data;
+        this.produtosFiltrados = this.produtos
       } catch (error) {
         console.error("Erro ao buscar os produtos:", error);
       } finally {
@@ -198,6 +223,23 @@ export default {
 </script>
 
 <style scoped>
+
+.search-input {
+  background-color: white;
+  color: #333; 
+  border: 1px solid #f4a261; 
+  padding: 10px 20px;
+  border-radius: 4px;
+  outline: none; 
+  cursor: text;
+  margin-bottom: 5px;
+  font-size: 16px;
+  margin-left: 7px;
+}
+
+.search-input:focus {
+  border-color: #e76f51; /* Cor mais escura da borda ao focar */
+}
 
 .status-label-active {
   background-color: rgb(51, 189, 51);
