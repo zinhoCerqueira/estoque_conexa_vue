@@ -95,7 +95,7 @@
 
               <i 
                 v-else 
-                class="fas fa-check-circle inative-icon" 
+                class="fas fa-check-circle inactive-icon" 
                 @click="openInactivationModal(item)" 
                 title="Ativar item">
               </i>
@@ -150,7 +150,7 @@ export default {
         console.log(response)
 
         if (response.status === 200) {
-          // window.location.reload();
+          window.location.reload();
         } else {
           console.log(response)
           alert("Erro ao inativar o produto: " + response.data.message);
