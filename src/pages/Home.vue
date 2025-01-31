@@ -38,6 +38,11 @@
             <SaleCard v-if="showCart" :isCartVisible="showCart" :produtos="produtos" @close="closeCart" />
             <RegisterCard v-if="isRegisterOpen" :isVisible="isRegisterOpen" :produtos="produtos" @close="closeRegister"/>
             <InativeItemCard :isVisible="showInactivationModal" :item="selectedItem" @close="showInactivationModal = false" @confirm="inactivateItem" />
+            <ItemDescription
+              :item="selectedItem"
+              :isVisible="isModalVisible"
+              @update:isVisible="isModalVisible = $event"
+            />
           </div>
         </div>
       </div>
@@ -96,9 +101,7 @@
                   title="Ativar item">
                 </i>
 
-                <i class="fa-regular fa-eye view-icon"
-                  title="Ver detalhes"
-                ></i>
+                <i class="fa-regular fa-eye view-icon" title="Ver detalhes" @click="showDetails(item)"></i>
               </div>
             </td>
           </tr>
@@ -114,6 +117,7 @@ import RegisterCard from "../components/RegisterCard.vue";
 import SaleCard from "../components/SaleCard.vue";
 import Header from "../components/Header.vue";
 import InativeItemCard from "../components/InativeItemCard.vue";
+import ItemDescription from "../components/ItemDescription.vue";
 
 export default {
   components: {
@@ -121,6 +125,7 @@ export default {
     SaleCard,
     Header,
     InativeItemCard,
+    ItemDescription
   },
   data() {
     return {
@@ -133,10 +138,16 @@ export default {
       loading: false,
       produtosFiltrados: [],
       termoBusca: "",
+      isModalVisible:false
     };
   },
 
   methods: {
+    showDetails(item) {
+      this.selectedItem = item;
+      this.isModalVisible = true;
+    },
+
     formatCurrency(value) {
       if (!value) return "R$ 0,00"; 
       return new Intl.NumberFormat("pt-BR", {
@@ -221,6 +232,9 @@ export default {
         );
         this.produtos = response.data.data;
         this.produtosFiltrados = this.produtos
+
+        console.log(response)
+        
       } catch (error) {
         console.error("Erro ao buscar os produtos:", error);
       } finally {
