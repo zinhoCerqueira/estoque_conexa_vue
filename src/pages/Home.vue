@@ -108,6 +108,8 @@
         </tbody>
       </table>
     </div>
+
+    <Footer></Footer>
   </div>
 </template>
 
@@ -118,6 +120,7 @@ import SaleCard from "../components/SaleCard.vue";
 import Header from "../components/Header.vue";
 import InativeItemCard from "../components/InativeItemCard.vue";
 import ItemDescription from "../components/ItemDescription.vue";
+import Footer from "../components/Footer.vue";
 
 export default {
   components: {
@@ -125,7 +128,8 @@ export default {
     SaleCard,
     Header,
     InativeItemCard,
-    ItemDescription
+    ItemDescription,
+    Footer
   },
   data() {
     return {
@@ -234,7 +238,7 @@ export default {
         this.produtosFiltrados = this.produtos
 
         console.log(response)
-        
+
       } catch (error) {
         console.error("Erro ao buscar os produtos:", error);
       } finally {
@@ -405,7 +409,11 @@ body {
 }
 
 .home {
+  display: flex;
+  flex-direction: column;
+  min-height: 81vh;
   padding: 20px;
+  box-sizing: border-box; 
 }
 
 .logout-button {
